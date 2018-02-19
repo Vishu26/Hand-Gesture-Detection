@@ -29,10 +29,18 @@ while video.isOpened():
 
     _, contours, heirarchy = cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
     for c in contours:
-        if cv2.contourArea(c) > 20000:
+        if cv2.contourArea(c) > 30000:
             (x, y), radius = cv2.minEnclosingCircle(c)
             cv2.circle(img2, (int(x),int(y)), int(radius),(0, 255, 0), 2)
-            #cv2.convexHull(c)
+            hull = cv2.convexHull(c, returnPoints=False)
+            defects = cv2.convexityDefects(c, hull)
+            for i in range(defects.shape[0]):
+                s, e, f, d = defects[i, 0]
+                start = tuple(c[s][0])
+                end = tuple(c[e][0])
+                far = tuple(c[f][0])
+                cv2.line(img2, start, end, [0, 255, 0], 2)
+                cv2.circle(img2, far, 5, [0, 0, 255], -1)
     #cv2.drawContours(img2, contours, -1, (255, 255, 0), 3)
 
     cv2.imshow('hand', img2)
