@@ -24,14 +24,16 @@ while video.isOpened():
         for face in faces:
             (x, y, w, h) = face
             img[y-50:y+h, x:x+w] = 0
-    '''_, contours, heirarchy = cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
-    for c in contours:
-        if cv2.contourArea(c) > 4000:
-            cv2.drawContours(img2, c, -1, 1, 3)'''
     img2 = cv2.bitwise_and(img2, img2, mask=img)
 
-
+    _, contours, heirarchy = cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    for c in contours:
+        if cv2.contourArea(c) > 20000:
+            (x, y), radius = cv2.minEnclosingCircle(c)
+            cv2.circle(img2, (int(x),int(y)), int(radius),(0, 255, 0), 2)
+            #cv2.convexHull(c)
+    #cv2.drawContours(img2, contours, -1, (255, 255, 0), 3)
 
     cv2.imshow('hand', img2)
 
